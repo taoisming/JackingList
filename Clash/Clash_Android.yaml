@@ -1,0 +1,116 @@
+# === Gemini精简优化安卓配置 ===
+# === 节点与代理源 ===
+proxy-providers:
+  Airport1: { type: http, url: "https://sep.bbdmfetch.com/api/v1/client/subscribe?token=64ba85477145c43f96c1ddffa339287f", interval: 86400, health-check: {enable: false}, proxy: 直连 }
+
+proxies:
+  - {name: 直连, type: direct}
+
+# === 全局配置 ===
+mixed-port: 7890
+allow-lan: false
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+log-level: silent
+global-client-fingerprint: chrome
+udp-policy-not-matched: DIRECT
+
+# === 流量嗅探 ===
+sniffer:
+  enable: true
+  sniff: { HTTP: {ports: [80, 8080-8880], override-destination: true}, TLS: {ports: [443, 8443]}, QUIC: {ports: [443, 8443]} }
+  sniff-nameserver-queries: true
+  skip-domain: ["+.lan", "+.local", "rule-set:cn_domain"]
+
+# === 入站模式 ===
+tun:
+  enable: true
+  stack: gvisor
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+  strict-route: true
+  skip-proxy: [192.168.0.0/16, 10.0.0.0/8, 127.0.0.0/8, 224.0.0.0/4, "rule-set:cn_domain"]
+  package-name-filter: 
+    - "com.tencent.mm"
+    - "com.xingin.xhs"
+    - "+.xiaohongshu.com"
+    - "+.xhs.com"
+    - "com.ss.android.ugc.aweme"
+    - "com.taobao.taobao"
+    - "com.eg.android.AlipayGphone"
+    - "+.wechat.com"
+    - "+.tencent.com"
+    - "+.biliapi.net"
+    - "+.bilibili.com"
+    - "tv.danmaku.bili"
+
+# === DNS 优化 ===
+dns:
+  enable: true
+  ipv6: false
+  respect-rules: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  default-nameserver: [223.5.5.5]
+  nameserver: [223.5.5.5, 119.29.29.29]
+  proxy-server-nameserver: [223.5.5.5, 119.29.29.29]
+  nameserver-policy: { "rule-set:cn_domain,private_domain": [223.5.5.5, 119.29.29.29] }
+  fake-ip-filter:
+    - "+.local"
+    - "+.localhost"
+    - "+.msftconnecttest.com"
+    - "+.msftncsi.com"
+    - "time.*.com"
+    - "time.*.gov"
+    - "ntp.*.com"
+    - "ntp.*.com"
+    - "rule-set:cn_domain"
+
+# === 出站策略 ===
+pr: &pr {type: select, proxies: [直连, 🚀 默认代理, 🇭🇰 香港, 🇹🇼 台湾, 🇸🇬 新加坡, 🇰🇷 韩国, 🇯🇵 日本, 🇺🇲 美国, 🌍 其他国家, 🌐 所有节点, REJECT]}
+
+proxy-groups:
+  - {name: 🚀 默认代理, type: select, proxies: [🇭🇰 香港, 🇹🇼 台湾, 🇸🇬 新加坡, 🇰🇷 韩国, 🇯🇵 日本, 🇺🇲 美国, 🌍 其他国家, 🌐 所有节点, 直连]}
+  - {name: "Gemini", type: select, proxies: ["🚀 默认代理", "🇺🇲 美国", "🇭🇰 香港", "🇸🇬 新加坡"]}
+  - {name: "Google", type: select, proxies: ["🚀 默认代理", "🇺🇲 美国", "🇭🇰 香港", "🇸🇬 新加坡"]}
+  - {name: "YouTube", type: select, proxies: ["🚀 默认代理", "🇺🇲 美国", "🇭🇰 香港", "🇸🇬 新加坡"]}
+  - {name: "Telegram", type: select, proxies: ["🚀 默认代理", "🇺🇲 美国", "🇭🇰 香港", "🇸🇬 新加坡"]}
+  - {name: 🎯 直连, type: select, proxies: [直连, 🚀 默认代理]}
+  - {name: 🇭🇰 香港, type: select, include-all: true, filter: "(?i)港|HK|Hong"}
+  - {name: 🇹🇼 台湾, type: select, include-all: true, filter: "(?i)台|TW|Taiwan"}
+  - {name: 🇸🇬 新加坡, type: select, include-all: true, filter: "(?i)新|SG|Singapore"}
+  - {name: 🇰🇷 韩国, type: select, include-all: true, filter: "(?i)韩|KR|Korea"}
+  - {name: 🇯🇵 日本, type: select, include-all: true, filter: "(?i)日|JP|Japan"}
+  - {name: 🇺🇲 美国, type: select, include-all: true, filter: "(?i)美|US|States|America"}
+  - {name: 🌍 其他国家, type: select, include-all: true, filter: "^((?!(港|HK|台|TW|新|SG|日|JP|美|US|韩|KR|直连)).)*$"}
+  - {name: "🌐 所有节点", type: select, include-all: true, proxies: ["DIRECT"]}
+
+# === 规则匹配 ===
+rules:
+  - RULE-SET,private_domain,🎯 直连
+  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
+  - RULE-SET,telegram_domain,Telegram
+  - RULE-SET,telegram_ip,Telegram
+  - RULE-SET,youtube_domain,YouTube
+  - RULE-SET,google_domain,Google
+  - RULE-SET,Jacking_proxy,🚀 默认代理
+  - RULE-SET,Jacking_direct,🎯 直连
+  - RULE-SET,apple_cn_domain,🎯 直连
+  - RULE-SET,cn_domain,🎯 直连
+  - RULE-SET,gfw_domain,🚀 默认代理
+  - MATCH,🎯 直连
+
+# === 规则集定义 ===
+rule-providers:
+  private_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"}
+  cn_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"}
+  apple_cn_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-cn.mrs"}
+  gfw_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/gfw.mrs"}
+  youtube_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"}
+  google_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"}
+  telegram_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"}
+  telegram_ip: {type: http, interval: 86400, behavior: ipcidr, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"}
+  Jacking_direct: {type: http, interval: 86400, behavior: domain, format: yaml, url: "https://raw.githubusercontent.com/taoisming/JackingList/refs/heads/main/Customize/direct.yaml"}
+  Jacking_proxy: {type: http, interval: 86400, behavior: domain, format: yaml, url: "https://raw.githubusercontent.com/taoisming/JackingList/refs/heads/main/Customize/proxy.yaml"}
