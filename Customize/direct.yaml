@@ -1,0 +1,46 @@
+payload:
+  # --- 基础规则 ---
+  - '+.172mix.com'
+
+  # --- 小红书去广告 ---
+  - DOMAIN,ads-img-qc.xhscdn.com,REJECT
+  - DOMAIN,ads-video-alig.xhscdn.com,REJECT
+  - DOMAIN,t-ads.xiaohongshu.com,REJECT
+  - DOMAIN,relay-alc.xiaohongshu.com,REJECT
+  - DOMAIN-SUFFIX,ads.xiaohongshu.com,REJECT
+  - DOMAIN-SUFFIX,adserver.xiaohongshu.com,REJECT
+
+  # --- 腾讯新闻 & 腾讯通用广告 ---
+  - DOMAIN-SUFFIX,gdt.qq.com,REJECT
+  - DOMAIN-SUFFIX,l.qq.com,REJECT
+  - DOMAIN,adsmind.gdtimg.com,REJECT
+  - DOMAIN,pgdt.gtimg.cn,REJECT
+  - DOMAIN,pgdt.ugdtimg.com,REJECT
+  - DOMAIN,splashqqlive.gtimg.com,REJECT
+  - DOMAIN,wa.gtimg.com,REJECT
+  - DOMAIN,trace.qq.com,REJECT
+
+  # --- 微信小程序 & 公众号 ---
+  - DOMAIN,mp.weixin.qq.com/mp/getappmsgad,REJECT
+  - DOMAIN,ad.wechat.com,REJECT
+  - DOMAIN,qimg.gdtimg.com,REJECT
+  - DOMAIN,badjs.weixin.qq.com,REJECT
+  - DOMAIN,dns.weixin.qq.com,REJECT
+  - DOMAIN,monitor.utils.qq.com,REJECT
+
+  # --- 荣耀系统 & 应用商店 ---
+  - DOMAIN,ads.hicloud.com,REJECT
+  - DOMAIN,ads.dbankcloud.cn,REJECT
+  - DOMAIN-SUFFIX,ads.huawei.com,REJECT
+  - DOMAIN-SUFFIX,ads.hihonor.com,REJECT
+  - DOMAIN-SUFFIX,hicloud.com.ad,REJECT
+  - DOMAIN,app-center-ads.honor.com,REJECT
+  - DOMAIN,sdkconfig.ad.honor.com,REJECT
+  - DOMAIN,display.ad.honor.com,REJECT
+  - DOMAIN,metrics.data.hicloud.com,REJECT
+  - DOMAIN,log-collection.honor.com,REJECT
+
+  # --- 通用统计与追踪 ---
+  - DOMAIN-KEYWORD,adstats,REJECT
+  - DOMAIN-KEYWORD,ad-tracking,REJECT
+  - DOMAIN-SUFFIX,tpns.tencent.com,REJECT
