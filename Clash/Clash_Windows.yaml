@@ -40,12 +40,12 @@ dns:
     "rule-set:google_domain,youtube_domain,gemini_domain,gfw_domain,Jacking_proxy": ["https://8.8.8.8/dns-query"]
     
 proxy-groups:
-  - {name: "🚀 默认代理", type: select, use: [Airport1], proxies: [DIRECT, REJECT]}
-  - {name: "Gemini", type: select, proxies: ["🚀 默认代理", "🇺🇲 美国", "🇭🇰 香港", "🇸🇬 新加坡"]}
-  - {name: "Google", type: select, proxies: ["🚀 默认代理", "🇺🇲 美国", "🇭🇰 香港", "🇸🇬 新加坡"]}
-  - {name: "YouTube", type: select, proxies: ["🚀 默认代理", "🇺🇲 美国", "🇭🇰 香港", "🇸🇬 新加坡"]}
-  - {name: "Telegram", type: select, proxies: ["🚀 默认代理", "🇺🇲 美国", "🇭🇰 香港", "🇸🇬 新加坡"]}
-  - {name: "Onedrive", type: select, proxies: ["🚀 默认代理", "🇺🇲 美国", "🇭🇰 香港", "🇸🇬 新加坡"]}
+  - {name: "🚀 默认代理", type: select, proxies: [🇭🇰 香港, 🇹🇼 台湾, 🇸🇬 新加坡, 🇰🇷 韩国, 🇯🇵 日本, 🇺🇲 美国, 🌍 其他国家, DIRECT, REJECT]}
+  - {name: Gemini, <<: *pr}
+  - {name: Google, <<: *pr}
+  - {name: YouTube, <<: *pr}
+  - {name: Telegram, <<: *pr}
+  - {name: Onedrive, <<: *pr}
   - {name: "🎯 直连", type: select, proxies: [DIRECT, "🚀 默认代理"]}
   
   # 自动筛选区域组
