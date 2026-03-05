@@ -36,7 +36,7 @@ dns:
   nameserver: [223.5.5.5, 119.29.29.29]
   proxy-server-nameserver: [223.5.5.5, "https://8.8.8.8/dns-query"]
   nameserver-policy: 
-    "rule-set:cn_domain,private_domain,apple_cn_domain": [223.5.5.5]
+    "rule-set:private_domain,Jacking_direct,cn_domain,apple_cn_domain": [223.5.5.5]
     "rule-set:google_domain,youtube_domain,gemini_domain,gfw_domain,Jacking_proxy": ["https://8.8.8.8/dns-query"]
     
 proxy-groups:
