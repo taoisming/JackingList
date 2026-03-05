@@ -81,7 +81,7 @@ rules:
   - RULE-SET,cn_ip,🎯 直连,no-resolve
   - MATCH,🚀 默认代理
 
-  rule-providers:
+rule-providers:
   private_domain: {type: http, interval: 259200, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"}
   gemini_domain: {type: http, interval: 259200, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/gemini.mrs"}
   youtube_domain: {type: http, interval: 259200, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"}
