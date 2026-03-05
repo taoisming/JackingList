@@ -1,0 +1,94 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      { "tag": "google", "address": "https://8.8.8.8/dns-query", "detour": "🚀 节点选择" },
+      { "tag": "local", "address": "223.5.5.5", "detour": "direct" }
+    ],
+    "rules": [
+      { "rule_set": "geosite-cn", "server": "local" },
+      { "rule_set": "geosite-google", "server": "google" }
+    ],
+    "final": "google"
+  },
+  "inbounds": [
+    { "type": "tun", "tag": "tun-in", "interface_name": "singbox-tun", "address": "172.19.0.1/30", "auto_route": true, "strict_route": true, "stack": "system" }
+  ],
+  "outbounds": [
+    { "type": "selector", "tag": "🚀 节点选择", "outbounds": ["香港节点", "美国节点", "🤖 Gemini专用", "direct"] },
+    { "type": "selector", "tag": "🤖 Gemini专用", "outbounds": ["美国节点", "新加坡节点"] },
+    { "type": "direct", "tag": "direct" },
+    { "type": "dns", "tag": "dns-out" },
+    // --- 这里通过 GUI 导入你的实际节点列表 ---
+    { "type": "selector", "tag": "香港节点", "outbounds": ["{http://127.0.0.1:3002/download/Bitz?target=sing-box}"] }, 
+    { "type": "selector", "tag": "美国节点", "outbounds": ["{http://127.0.0.1:3002/download/Bitz?target=sing-box}"] }
+  ],
+  "route": {
+    "rules": [
+      { "protocol": "dns", "outbound": "dns-out" },
+      { "rule_set": "private", "outbound": "direct" },
+      { "rule_set": "gemini", "outbound": "🤖 Gemini专用" },
+      { "rule_set": "telegram", "outbound": "🚀 节点选择" },
+      { "rule_set": "youtube", "outbound": "🚀 节点选择" },
+      { "rule_set": "google", "outbound": "🚀 节点选择" },
+      { "rule_set": "cn_domain", "outbound": "direct" },
+      { "rule_set": "cn_ip", "outbound": "direct" }
+    ],
+    "rule_set": [
+      {
+        "tag": "private",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geosite/private.mrs",
+        "download_detour": "🚀 节点选择"
+      },
+      {
+        "tag": "gemini",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geosite/google-gemini.mrs",
+        "download_detour": "🚀 节点选择"
+      },
+      {
+        "tag": "youtube",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geosite/youtube.mrs",
+        "download_detour": "🚀 节点选择"
+      },
+      {
+        "tag": "telegram",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geosite/telegram.mrs",
+        "download_detour": "🚀 节点选择"
+      },
+      {
+        "tag": "google",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geosite/google.mrs",
+        "download_detour": "🚀 节点选择"
+      },
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geosite/cn.mrs",
+        "download_detour": "🚀 节点选择"
+      },
+      {
+        "tag": "cn_ip",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geoip/cn.mrs",
+        "download_detour": "🚀 节点选择"
+      }
+    ],
+    "final": "🚀 节点选择",
+    "auto_detect_interface": true
+  }
+}
