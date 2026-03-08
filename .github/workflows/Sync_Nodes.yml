@@ -1,30 +1,27 @@
-name: 每6小时同步订阅节点
+name: 自动同步订阅节点
 
 on:
   schedule:
-    # 这里的 cron 语法表示每 6 小时运行一次 (UTC时间 0, 6, 12, 18点)
-    - cron: '0 */6 * * *'
-  workflow_dispatch: # 允许你手动点击按钮立即运行测试
+    - cron: '0 */6 * * *' # 每6小时运行一次
+  workflow_dispatch: # 允许手动点击运行
 
 jobs:
-  sync:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # 显式声明需要写入权限
-    
     steps:
-      - name: 检出仓库代码
+      - name: 检出代码
         uses: actions/checkout@v4
 
-      - name: 从 Worker 获取最新节点
+      - name: 抓取并转换节点
         run: |
-          # 请将下面的 URL 换成你在浏览器里测试成功的那个长链接
-          curl -L "https://sub-convert.taoisming.workers.dev/sub?target=singbox&url=https://sep.bbdmfetch.com/api/v1/client/subscribe?token=64ba85477145c43f96c1ddffa339287f" -o nodes.json
+          # 这里换成你刚才测试成功的那个 Worker 长链接
+          # 注意：去掉了原本会报错的 &config=... 参数，让它使用默认兼容配置
+          curl -L "https://sub-convert.taoisming.workers.dev/sub?target=singbox&url=https%3A%2F%2Fsep.bbdmfetch.com%2Fapi%2Fv1%2Fclient%2Fsubscribe%3Ftoken%3D64ba85477145c43f96c1ddffa339287f" -o nodes.json
 
-      - name: 提交并推送到仓库
+      - name: 提交到仓库
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
           git add nodes.json
-          git commit -m "自动更新订阅节点: $(date)" || echo "没有内容更新"
+          git commit -m "更新节点数据" || exit 0
           git push
